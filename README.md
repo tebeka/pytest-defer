@@ -8,4 +8,7 @@ def test_example(defer):
     defer.append(lambda: delete_instance(instance1))  # called second
     instance2 = spin_instance()
     defer.append(lambda: delete_instance(instance2))  # called first
+
+    # Test code using instance1 & instance2
+    ...
 ```
