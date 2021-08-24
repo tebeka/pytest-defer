@@ -21,6 +21,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Miki Tebeka',
     author_email='miki@353solutions.com',
+    url='https://github.com/tebeka/pytest-defer',
     packges=find_packages(),
     entry_points={
         'pytest11': [
@@ -30,7 +31,4 @@ setup(
     install_requires=[
         'pytest>=6.2',
     ],
-    project_urls={
-        'Home': 'https://github.com/tebeka/pytest-defer',
-    },
 )
