@@ -22,7 +22,7 @@ setup(
     author='Miki Tebeka',
     author_email='miki@353solutions.com',
     url='https://github.com/tebeka/pytest-defer',
-    packges=find_packages(),
+    packages=find_packages(),
     entry_points={
         'pytest11': [
             'defer = pytest_defer',
