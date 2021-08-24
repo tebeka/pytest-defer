@@ -30,4 +30,7 @@ setup(
     install_requires=[
         'pytest>=6.2',
     ],
+    project_urls={
+        'Home': 'https://github.com/tebeka/pytest-defer',
+    },
 )
