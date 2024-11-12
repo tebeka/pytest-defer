@@ -12,3 +12,7 @@ def test_example(defer):
     # Test code using instance1 & instance2
     ...
 ```
+
+## Development
+
+Me (@tebeka) is playing around with [uv](https://docs.astral.sh/uv) for this project.

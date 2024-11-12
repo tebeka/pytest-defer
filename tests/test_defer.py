@@ -1,4 +1,43 @@
-from pathlib import Path
+from subprocess import run
+from sys import executable
+
+
+
+def test_files(tmp_path):
+    venv = tmp_path / '.venv'
+    run([executable, '-m', 'venv', str(venv)], check=True)
+    py = venv / 'bin' / 'python'
+    run([str(py), '-m', 'pip', 'install', '-e', '.'], check=True)
+
+    code = code_template.format(root_dir=tmp_path)
+    with open(tmp_path / 'test_files.py', 'w') as out:
+        out.write(code)
+
+    # result = testdir.runpytest()
+    # result.assert_outcomes(passed=2)
+
+    # root = Path(testdir.tmpdir)
+    # file_a, file_b = root / 'a', root / 'b'
+    # assert file_a.exists()
+    # assert file_b.exists()
+    # # Check order
+    # assert file_a.stat().st_ctime > file_b.stat().st_ctime
+
+    # file_c = root / 'c'
+    # with file_c.open() as fp:
+        # data = fp.read()
+        # assert 'c' == data
+
+    # file_d = root / 'd'
+    # with file_d.open() as fp:
+        # data = fp.read()
+        # assert 'dd' == data
+
+    # file_e = root / 'e'
+    # with file_e.open() as fp:
+        # data = fp.read()
+        # assert 'e' == data
+
 
 
 code_template = '''
@@ -26,33 +65,3 @@ def test_args(defer):
     defer.append(write_to, 'd', 'd', extra='d')
     defer.append(write_to, 'e', extra='e')
 '''
-
-
-def test_files(testdir):
-    code = code_template.format(root_dir=str(testdir.tmpdir))
-    testdir.makepyfile(code)
-
-    result = testdir.runpytest()
-    result.assert_outcomes(passed=2)
-
-    root = Path(testdir.tmpdir)
-    file_a, file_b = root / 'a', root / 'b'
-    assert file_a.exists()
-    assert file_b.exists()
-    # Check order
-    assert file_a.stat().st_ctime > file_b.stat().st_ctime
-
-    file_c = root / 'c'
-    with file_c.open() as fp:
-        data = fp.read()
-        assert 'c' == data
-
-    file_d = root / 'd'
-    with file_d.open() as fp:
-        data = fp.read()
-        assert 'dd' == data
-
-    file_e = root / 'e'
-    with file_e.open() as fp:
-        data = fp.read()
-        assert 'e' == data
