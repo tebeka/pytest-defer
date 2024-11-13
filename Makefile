@@ -7,3 +7,6 @@ test:
 
 publish:
 	uv build
+
+install-tools:
+	python -m pip install uv
