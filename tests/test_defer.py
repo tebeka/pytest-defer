@@ -1,58 +1,57 @@
+from subprocess import run
+from sys import executable
 from pathlib import Path
+from shutil import copyfile
+from io import StringIO
+
+test_dir = Path(__file__).parent
 
 
-code_template = '''
-from pathlib import Path
-from time import sleep
+def test_defer(tmp_path):
+    tmp_path = Path('/tmp/ff')
+    venv = tmp_path / '.venv'
+    run([executable, '-m', 'venv', str(venv)], check=True)
+    venv_py = str(venv / 'bin' / 'python')
+    run([venv_py, '-m', 'pip', 'install', '-e', '.'], check=True)
 
-root_dir = Path({root_dir!r})
+    for file in test_dir.glob('_*.py'):
+        dest = tmp_path / file.name[1:]  # trim leading _
+        copyfile(file, dest)
 
+    out = run(
+        # -rfp shows summary of failed and passed
+        [venv_py, '-m', 'pytest', '-rfp'],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
-def write_to(file_name, data='', extra=''):
-    path = root_dir / file_name
-    with path.open('w') as out:
-        out.write(data)
-        out.write(extra)
+    # PASSED test_files.py::test_a
+    passed = 0
+    for line in StringIO(out.stdout):
+        if line.startswith('PASSED'):
+            passed += 1
 
+    assert passed == 2
 
-def test_defer(defer):
-    defer.append(lambda: sleep(0.1) or write_to('a'))
-    defer.append(lambda: 1/0)  # Make sure exception don't interrupt
-    defer.append(lambda: write_to('b'))
-
-
-def test_args(defer):
-    defer.append(write_to, 'c', 'c')
-    defer.append(write_to, 'd', 'd', extra='d')
-    defer.append(write_to, 'e', extra='e')
-'''
-
-
-def test_files(testdir):
-    code = code_template.format(root_dir=str(testdir.tmpdir))
-    testdir.makepyfile(code)
-
-    result = testdir.runpytest()
-    result.assert_outcomes(passed=2)
-
-    root = Path(testdir.tmpdir)
-    file_a, file_b = root / 'a', root / 'b'
+    file_a, file_b = tmp_path / 'a', tmp_path / 'b'
     assert file_a.exists()
     assert file_b.exists()
     # Check order
     assert file_a.stat().st_ctime > file_b.stat().st_ctime
 
-    file_c = root / 'c'
+    file_c = tmp_path / 'c'
     with file_c.open() as fp:
         data = fp.read()
         assert 'c' == data
 
-    file_d = root / 'd'
+    file_d = tmp_path / 'd'
     with file_d.open() as fp:
         data = fp.read()
         assert 'dd' == data
 
-    file_e = root / 'e'
+    file_e = tmp_path / 'e'
     with file_e.open() as fp:
         data = fp.read()
         assert 'e' == data

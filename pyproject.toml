@@ -1,0 +1,27 @@
+[project]
+
+name = "pytest_defer"
+description = "A 'defer' fixture for pytest"
+version = "0.2.1"
+authors = [
+	{name = "Miki Tebeka", email = "miki@353solutions.com"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["testing", "pytest"]
+classifiers = [
+    "Framework :: Pytest",
+]
+
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=8.3",
+]
+
+[project.entry-points.pytest11]
+pytest_defer = "pytest_defer"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.7.3",
+]

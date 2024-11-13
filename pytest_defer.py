@@ -4,7 +4,7 @@ import logging
 
 import pytest
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 
 class Defers(list):
@@ -22,5 +22,4 @@ def defer():
         try:
             fn(*args, **kw)
         except Exception as err:
-            logging.exception(
-                'defer: %s: exception: %s', fn.__name__, err)
+            logging.exception('defer: %s: exception: %s', fn.__name__, err)
