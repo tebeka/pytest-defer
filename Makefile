@@ -6,7 +6,8 @@ test:
 	uv run python -m pytest -v -rf tests
 
 publish:
-	uv build
+	test -n "$(UV_PUBLISH_TOKEN)" || (echo "UV_PUBLISH_TOKEN not set" && false)
+	uv publish
 
 install-tools:
 	python -m pip install uv
